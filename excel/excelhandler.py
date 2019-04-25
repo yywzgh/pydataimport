@@ -4,6 +4,7 @@ from datetime import date,datetime
 from db import dbhandler
 from db.dbhandler import brand
 
+#文件地址
 file = 'e:\手机0417.xls'
 
 session = dbhandler.create_session()
