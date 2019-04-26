@@ -2,7 +2,7 @@ from controller import erpcontroller
 
 
 def main():
-    erpcontroller.insert_data();
+    erpcontroller.import_data();
 
 
 if __name__ == '__main__':
