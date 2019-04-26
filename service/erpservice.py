@@ -1,27 +1,22 @@
 import xlrd
 import xlwt
 from datetime import date, datetime
-from db import dbhandler
-from db.dbhandler import Brand
-from db.dbhandler import Model
-from db.dbhandler import Specification
-from db.dbhandler import Commodity
+from dao import erpdao
+from model.erpmodel import Brand, Model, Specification, Commodity
 
-#文件地址
+# 文件地址
 file = 'e:\手机0417.xls'
 
-session = dbhandler.create_session()
+session = erpdao.create_session()
+
 
 def read_all_excel():
-
     wb = xlrd.open_workbook(filename=file)#打开文件
     print(wb.sheet_names())#获取所有表格名字
-
     sheet1 = wb.sheet_by_index(0)#通过索引获取表格
     #sheet2 = wb.sheet_by_name('年级')#通过名字获取表格
     #print(sheet1,sheet2)
     print(sheet1.name,sheet1.nrows,sheet1.ncols)
-
     #rows = sheet1.row_values(2)#获取行内容
     #cols = sheet1.col_values(3)#获取列内容
     #print(rows)
@@ -51,7 +46,7 @@ def insert_brand_data():
     for rown in range(1, num_rows):
         brand_name = sheet1.cell_value(rown, 2)
         print(brand_name)
-        dbhandler.save_brand(session, Brand, brand_name)
+        erpdao.save_brand(session, Brand, brand_name)
 
 
 # 2.型号
@@ -67,10 +62,10 @@ def insert_model_data():
         type_name = sheet1.cell_value(rown, 0)
         type_id = sheet1.cell_value(rown, 1)
         brand_name = sheet1.cell_value(rown, 2)
-        brand_id = dbhandler.query_brand_id(session, Brand, brand_name)
+        brand_id = erpdao.query_brand_id(session, Brand, brand_name)
         print(brand_name)
         model_name = sheet1.cell_value(rown, 3)
-        dbhandler.save_model(session, Model, model_name, brand_id, type_id)
+        erpdao.save_model(session, Model, model_name, brand_id, type_id)
 
 
 # 3.插入规格
@@ -86,7 +81,7 @@ def insert_specification_data(num_cols, parent_title):
         type_id = sheet1.cell_value(rown, 1)
         title = sheet1.cell_value(rown, num_cols)
         if title:
-            dbhandler.save_specification(session, Specification, title, type_id, parent_title)
+            erpdao.save_specification(session, Specification, title, type_id, parent_title)
 
 
 # 4.商品
@@ -104,24 +99,24 @@ def insert_commodity_data():
         type_id = sheet1.cell_value(rown, 1)
 
         brand_name = sheet1.cell_value(rown, 2)
-        brand_id = dbhandler.query_brand_id(session, Brand, brand_name)
+        brand_id = erpdao.query_brand_id(session, Brand, brand_name)
 
         model_name = sheet1.cell_value(rown, 3)
-        model_id = dbhandler.query_model_id(session, Model, model_name, brand_id, type_id)
+        model_id = erpdao.query_model_id(session, Model, model_name, brand_id, type_id)
 
-        print("型号",model_name,model_id)
+        print("型号", model_name, model_id)
 
         version = sheet1.cell_value(rown, 4)
-        version_id = dbhandler.query_specification_id(session, Specification, version, type_id)
+        version_id = erpdao.query_specification_id(session, Specification, version, type_id)
 
         print("version_id", version_id)
 
         storage = sheet1.cell_value(rown, 5)
-        storage_id = dbhandler.query_specification_id(session, Specification, storage, type_id)
+        storage_id = erpdao.query_specification_id(session, Specification, storage, type_id)
         print("storage", storage_id)
 
         colour = sheet1.cell_value(rown, 6)
-        colour_id = dbhandler.query_specification_id(session, Specification, colour, type_id)
+        colour_id = erpdao.query_specification_id(session, Specification, colour, type_id)
         print("###### colour", colour_id)
 
         spec_ids = version_id.join(storage_id).join(colour_id).strip(",")
@@ -131,10 +126,4 @@ def insert_commodity_data():
         commodity_name = sheet1.cell_value(rown, 7)
         commodity_id = sheet1.cell_value(rown, 8)
 
-        dbhandler.save_commodity(session, Commodity, commodity_id, commodity_name, brand_id, type_id, model_id, spec_ids)
-
-
-#insert_specification_data(4,"规格")
-#insert_specification_data(5,"容量")
-#insert_specification_data(6,"颜色")
-insert_commodity_data()
+        erpdao.save_commodity(session, Commodity, commodity_id, commodity_name, brand_id, type_id, model_id, spec_ids)

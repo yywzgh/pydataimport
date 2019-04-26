@@ -1,11 +1,7 @@
 import sqlalchemy
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String  # 区分大小写
+from model.erpmodel import Brand, Model, Specification, Commodity
 from sqlalchemy.orm import sessionmaker
-
-# 生成orm基类
-base = declarative_base()
 
 
 # 根据品牌名称查询品牌 不存在则新增
@@ -41,7 +37,7 @@ def save_specification(session, classobj, title, type_id, parent_title):
 
 # 保存商品
 def save_commodity(session, classobj, commodity_id, commodity_name, brand_id, type_id, model_id, spec_ids):
-    add_records(session, Commodity(title=commodity_name, id=commodity_id, erp_sppp_id=brand_id, erp_spfl_id=type_id, erp_spuxx_id=model_id,erp_spgg_ids=spec_ids, status="1"))
+    add_records(session, Commodity(title=commodity_name, id=commodity_id, erp_sppp_id=brand_id, erp_spfl_id=type_id, erp_spuxx_id=model_id,erp_spgg_ids=spec_ids))
 
 
 def query_brand_id(session, classobj, title):
@@ -61,7 +57,6 @@ def query_specification_id(session, classobj, title, type_id):
         return ""
     else:
         record = records[0]
-        print("##############",record.pid, record.pid)
         return str(record.pid) + "_" + str(record.id) + ","
 
 
@@ -81,48 +76,10 @@ def add_records(session, classobj):
     session.commit()
 
 
-class Brand(base):
-    __tablename__ = 'erp_sppp'  # 表名
-    id = Column(Integer, primary_key=True)
-    title = Column(String(20))
-    status = Column(String(20))
-
-
-class Model(base):
-    __tablename__ = 'erp_spuxx'  # 表名
-    id = Column(Integer, primary_key=True)
-    title = Column(String(100))
-    erp_sppp_id = Column(Integer)
-    erp_spfl_id = Column(Integer)
-    status = Column(String(20))
-
-
-# 规格
-class Specification(base):
-    __tablename__ = 'erp_spgg'  # 表名
-    id = Column(Integer, primary_key=True)
-    pid = Column(Integer)
-    title = Column(String(100))
-    erp_spfl_id = Column(Integer)
-    status = Column(String(20))
-
-
-# 商品
-class Commodity(base):
-    __tablename__ = 'erp_skuxx'  # 表名
-    id = Column(Integer, primary_key=True)
-    title = Column(String(100))
-    erp_sppp_id = Column(Integer)
-    erp_spfl_id = Column(Integer)
-    erp_spuxx_id = Column(Integer)
-    erp_spgg_ids = Column(String(200))
-    status = Column(String(20))
-
-
 # 创建连接
 def create_session():
     # base.metadata.create_all(engine) #创建表结构
-
+    engine = create_engine("mysql+pymysql://root:123456@11.22.33.44:55/test", encoding='utf-8', echo=True)
     session_class = sessionmaker(bind=engine)  ##创建与数据库的会话，class,不是实例
     session = session_class()  # 生成session实例
     return session
