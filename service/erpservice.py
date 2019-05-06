@@ -2,10 +2,11 @@ import xlrd
 import xlwt
 from datetime import date, datetime
 from dao import erpdao
-from model.erpmodel import Brand, Model, Specification, Commodity
+from model.erpmodel import Brand, Model, Specification, Commodity, Dept, DeptRight, Store, StoreRight, UserInfo
 
 # 文件地址
 file = 'e:\手机0417.xls'
+file2 = 'e:\人员0417.xls'
 
 session = erpdao.create_session()
 
@@ -127,3 +128,181 @@ def insert_commodity_data():
         commodity_id = sheet1.cell_value(rown, 8)
 
         erpdao.save_commodity(session, Commodity, commodity_id, commodity_name, brand_id, type_id, model_id, spec_ids)
+
+
+# 部门
+def insert_dept_1_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        title = sheet1.cell_value(rown, 0)
+        id = sheet1.cell_value(rown, 1)
+        pid = 0
+        if title:
+            erpdao.save_dept(session, Specification, id, title, pid, 1003,  1)
+
+def insert_dept_2_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        title = sheet1.cell_value(rown, 2)
+        id = sheet1.cell_value(rown, 3)
+        pid = 0
+        if title:
+            erpdao.save_dept(session, Dept, id, title, pid, 1003,  2)
+
+def insert_dept_3_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        title = sheet1.cell_value(rown, 2)
+        id = sheet1.cell_value(rown, 3)
+        pid = 0
+        if title:
+            erpdao.save_dept(session, Dept, id, title, pid, 1003,  3)
+
+# 部门
+def insert_deptright_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        title = sheet1.cell_value(rown, 4)
+        id = sheet1.cell_value(rown, 5)
+        erp_bmxx_ids = sheet1.cell_value(rown, 1) + "," + sheet1.cell_value(rown, 3) + "," + sheet1.cell_value(rown, 5)
+        if title:
+            erpdao.save_deptright(session, DeptRight, id, title, 1003, erp_bmxx_ids)
+
+
+# 仓库
+def insert_store_1_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        title = sheet1.cell_value(rown, 0)
+        id = sheet1.cell_value(rown, 1)
+        pid = 0
+        if title:
+            erpdao.save_store(session, Store, id, title, pid, 1003,  1)
+
+# 仓库
+def insert_store_2_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        title = sheet1.cell_value(rown, 2)
+        id = sheet1.cell_value(rown, 3)
+        pid = sheet1.cell_value(rown, 1)
+        if title:
+            erpdao.save_store(session, Store, id,  title, pid, 1003,  2)
+
+# 仓库
+def insert_store_3_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        title = sheet1.cell_value(rown, 4)
+        id = sheet1.cell_value(rown, 5)
+        pid = sheet1.cell_value(rown, 3)
+        if title:
+            erpdao.save_store(session, Store, id,  title, pid, 1003,  2)
+
+
+def insert_storeright_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        title = sheet1.cell_value(rown, 4)
+        id = sheet1.cell_value(rown, 5)
+        erp_ckxx_ids = sheet1.cell_value(rown, 1) + "," + sheet1.cell_value(rown, 3) + "," + sheet1.cell_value(rown, 5)
+        if title:
+            erpdao.save_storeright(session, StoreRight, id, title, 1003, erp_ckxx_ids)
+
+
+def insert_userinfo_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        name = sheet1.cell_value(rown, 7)
+        id = sheet1.cell_value(rown, 8)
+        dept_id = sheet1.cell_value(rown, 5)
+        mobile = sheet1.cell_value(rown, 10)
+        if name:
+            erpdao.save_userinfo(session, UserInfo, id, name, mobile, 1003, dept_id)
+
+def insert_userright_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        name = sheet1.cell_value(rown, 7)
+        id = sheet1.cell_value(rown, 8)
+        dept_id = sheet1.cell_value(rown, 5)
+        mobile = sheet1.cell_value(rown, 10)
+        if name:
+            erpdao.save_userinfo(session, UserInfo, id, name, mobile, 1003, dept_id, dept_id)
+
+
+def insert_user_data(num_cols, parent_title):
+    wb = xlrd.open_workbook(filename=file2)#打开文件
+    print(wb.sheet_names())#获取所有表格名字
+    sheet1 = wb.sheet_by_index(0)#通过索引获取表格
+    print(sheet1.name, sheet1.nrows, sheet1.ncols)
+    #num_rows = sheet1.nrows
+    num_rows = 2
+    #num_cols = sheet1.ncols
+    for rown in range(1,num_rows):
+        name = sheet1.cell_value(rown, 7)
+        id = sheet1.cell_value(rown, 8)
+        dept_id = sheet1.cell_value(rown, 5)
+        mobile = sheet1.cell_value(rown, 10)
+        if name:
+            erpdao.save_user(session, UserInfo, id, mobile, name, 1003)
